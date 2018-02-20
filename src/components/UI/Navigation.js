@@ -31,12 +31,12 @@ class Navigation extends PureComponent {
 
   render() {
     const { signedIn } = this.props
+    console.log(signedIn)
     return (
       <AppBar
         title={TITLE}
         iconElementLeft={<IconButton onClick={this.goHome}><HomeIcon /></IconButton>}
-        iconElementRight={signedIn ?
-          <FlatButton label="Sign out" onClick={this.signOut.bind(this)} /> : <FlatButton />}
+        iconElementRight={signedIn ? <FlatButton label="Sign out" onClick={this.signOut.bind(this)} /> : <FlatButton label="placeholder"/>}
       />
     )
   }

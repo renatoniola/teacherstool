@@ -2,14 +2,14 @@
 import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import fetchClassrooms, { fetchStudents } from '../actions/classrooms/fetch'
+import fetchClassrooms from '../actions/classrooms/fetch'
 import { connect as subscribeToWebsocket } from '../actions/websocket'
 import CreateClassroomButton from '../components/classrooms/CreateClassroomButton'
 import Paper from 'material-ui/Paper'
 import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
-import WatchClassroomIcon from 'material-ui/svg-icons/image/remove-red-eye'
-import JoinClassroomIcon from 'material-ui/svg-icons/social/person-add'
+//import WatchClassroomIcon from 'material-ui/svg-icons/image/remove-red-eye'
+//import JoinClassroomIcon from 'material-ui/svg-icons/social/person-add'
 
 import WaitingIcon from 'material-ui/svg-icons/image/timelapse'
 import './Lobby.css'
@@ -51,14 +51,16 @@ class Lobby extends PureComponent {
       <MenuItem
         key={index}
         onClick={this.goToClassroom(classroom._id)}
-        students={classroom.students}
+
         primaryText={ `${classroom.batchNumber} (${classroom.students.length})`} />
     )
   }
 
   render() {
     return (
+
       <div className="Lobby">
+
         <h1>Classes : </h1>
         <CreateClassroomButton />
         <Paper className="paper">
@@ -73,4 +75,4 @@ class Lobby extends PureComponent {
 
 const mapStateToProps = ({ classrooms, currentUser }) => ({ classrooms, currentUser })
 
-export default connect(mapStateToProps, { fetchClassrooms, subscribeToWebsocket, fetchStudents, push })(Lobby)
+export default connect(mapStateToProps, { fetchClassrooms, subscribeToWebsocket, push })(Lobby)

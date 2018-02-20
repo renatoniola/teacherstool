@@ -1,0 +1,7 @@
+.student-card{
+  width : 33%;
+  margin : 8px;
+}
+.students-container{
+  display : flex;
+}

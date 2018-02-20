@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { fetchOneClassroom, fetchStudents } from '../actions/classrooms/fetch'
-import doTurn from '../actions/classrooms/doTurn'
+//import doTurn from '../actions/classrooms/doTurn'
 import { connect as subscribeToWebsocket } from '../actions/websocket'
 import JoinClassroomDialog from '../components/classrooms/JoinClassroomDialog'
 import TurnButton from '../components/classrooms/TurnButton'
@@ -17,7 +17,7 @@ const studentShape = PropTypes.shape({
 })
 
 const StudentCard = (props) => (
-  <Card>
+  <Card className="student-card">
     <CardHeader
       title={ props.name }
       subtitle="Subtitle"
@@ -27,10 +27,7 @@ const StudentCard = (props) => (
     <CardText>
       { props.lastColorCode }
     </CardText>
-    <CardActions>
-      <FlatButton label="Action1" />
-      <FlatButton label="Action2" />
-    </CardActions>
+    
   </Card>
 );
 
@@ -88,10 +85,10 @@ class Classroom extends PureComponent {
       return <StudentCard className="student-card" name={student.name} photo={student.photo} lastColorCode={ student.evaluations[student.evaluations.length-1].colorCode}/>
     })
     return (
-      <div style={{ display: 'flex', flexFlow: 'column wrap', alignItems: 'center' }} className="classroom">
+      <div className="classroom">
         <h1>Students in class : { classroom.batchNumber }</h1>
         {/*<p>{title}</p> */}
-        { students }
+        <div className="students-container">{ students }</div>
 
 
 

@@ -1,12 +1,12 @@
-// src/components/games/CreateGameButton.js
+// src/components/classrooms/CreateClassroomButton.js
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import RaisedButton from 'material-ui/RaisedButton'
 import StarIcon from 'material-ui/svg-icons/action/favorite'
-import createGame from '../../actions/games/create'
+import createClassroom from '../../actions/classrooms/create'
 
-class CreateGameButton extends PureComponent {
+class CreateClassroomButton extends PureComponent {
   static propTypes = {
     signedIn: PropTypes.bool,
   }
@@ -15,11 +15,11 @@ class CreateGameButton extends PureComponent {
     if (!this.props.signedIn) return null
 
     return (
-      <div className="CreateGameButton">
+      <div className="CreateClassroomButton">
         <RaisedButton
-          label="Create Game"
+          label="Create Classroom"
           primary={true}
-          onClick={this.props.createGame}
+          onClick={this.props.createClassroom}
           icon={<StarIcon />} />
       </div>
     )
@@ -30,4 +30,4 @@ const mapStateToProps = ({ currentUser }) => ({
   signedIn: !!currentUser && !!currentUser._id,
 })
 
-export default connect(mapStateToProps, { createGame })(CreateGameButton)
+export default connect(mapStateToProps, { createClassroom })(CreateClassroomButton)

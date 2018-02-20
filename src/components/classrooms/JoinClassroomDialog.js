@@ -5,16 +5,16 @@ import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import joinGame from '../../actions/games/join'
+import joinClassroom from '../../actions/classrooms/join'
 
-class JoinGameDialog extends PureComponent {
+class JoinClassroomDialog extends PureComponent {
   static propTypes = {
     open: PropTypes.bool,
   }
 
-  joinGame = () => {
-    const { joinGame, game } = this.props
-    joinGame(game)
+  joinClassroom = () => {
+    const { joinClassroom, classroom } = this.props
+    joinClassroom(classroom)
   }
 
   render() {
@@ -29,39 +29,39 @@ class JoinGameDialog extends PureComponent {
           primary={true} />
       </Link>,
       <RaisedButton
-        label="Join Game"
+        label="Join Classroom"
         primary={true}
         keyboardFocused={true}
-        onClick={this.joinGame}
+        onClick={this.joinClassroom}
       />,
     ]
 
     return (
       <div>
         <Dialog
-          title="Join Game"
+          title="Join Classroom"
           actions={actions}
           modal={false}
           open={open}
           onRequestClose={this.handleClose}
         >
-          Hey <strong>{currentUser.name || 'there'}!</strong> Would you like to join this game?
+          Hey <strong>{currentUser.name || 'there'}!</strong> Would you like to join this classroom?
         </Dialog>
       </div>
     )
   }
 }
 
-const mapStateToProps = ({ currentUser, games }, { gameId }) => {
-  const game = games.filter((g) => (g._id === gameId))[0]
-  const isPlayer = game && game.players.filter((p) => (p.userId === currentUser._id)).length > 0
+const mapStateToProps = ({ currentUser, classrooms }, { classroomId }) => {
+  const classroom = classrooms.filter((g) => (g._id === classroomId))[0]
+  const isPlayer = classroom && classroom.players.filter((p) => (p.userId === currentUser._id)).length > 0
 
   return {
-    game,
+    classroom,
     currentUser,
     isPlayer,
-    open: game && !isPlayer && game.players.length < 2
+    open: classroom && !isPlayer && classroom.players.length < 2
   }
 }
 
-export default connect(mapStateToProps, { joinGame })(JoinGameDialog)
+export default connect(mapStateToProps, { joinClassroom })(JoinClassroomDialog)

@@ -8,11 +8,11 @@ import {
 
 const api = new API()
 
-export default (weapon, gameId) => {
+export default (weapon, classroomId) => {
   return (dispatch) => {
     dispatch({ type: APP_LOADING })
 
-    api.patch(`/games/${gameId}`, { move: weapon })
+    api.patch(`/classrooms/${classroomId}`, { move: weapon })
       .then(() => {
         dispatch({ type: APP_DONE_LOADING })
         dispatch({ type: LOAD_SUCCESS })

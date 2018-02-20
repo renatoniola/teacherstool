@@ -2,11 +2,11 @@
 import loading from './loading'
 import loadError from './loadError'
 import currentUser from './currentUser'
-import games from './games'
+import classrooms from './classrooms'
 
 export default {
   loading,
   loadError,
   currentUser,
-  games
+  classrooms
 }

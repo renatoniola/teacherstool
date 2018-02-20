@@ -1,4 +1,4 @@
-// src/actions/games/fetch.js
+// src/actions/classrooms/fetch.js
 
 import API from '../../api/client'
 import {
@@ -7,10 +7,10 @@ import {
   LOAD_ERROR,
   LOAD_SUCCESS
 } from '../loading'
-import { GAME_PLAYERS_UPDATED } from './subscribe'
+import { CLASSROOM_STUDENTS_UPDATED } from './subscribe'
 
-export const FETCHED_GAMES = 'FETCHED_GAMES'
-export const FETCHED_ONE_GAME = 'FETCHED_ONE_GAME'
+export const FETCHED_CLASSROOMS = 'FETCHED_CLASSROOMS'
+export const FETCHED_ONE_CLASSROOM = 'FETCHED_ONE_CLASSROOM'
 
 const api = new API()
 
@@ -18,13 +18,13 @@ export default () => {
   return (dispatch) => {
     dispatch({ type: APP_LOADING })
 
-    api.get('/games')
+    api.get('/classrooms')
       .then((result) => {
         dispatch({ type: APP_DONE_LOADING })
         dispatch({ type: LOAD_SUCCESS })
 
         dispatch({
-          type: FETCHED_GAMES,
+          type: FETCHED_CLASSROOMS,
           payload: result.body
         })
       })
@@ -38,20 +38,20 @@ export default () => {
   }
 }
 
-export const fetchPlayers = (game) => {
+export const fetchStudents = (classroom) => {
   return dispatch => {
     dispatch({ type: APP_LOADING })
 
-    api.get(`/games/${game._id}/players`)
+    api.get(`/classrooms/${classroom._id}/student`)
       .then((result) => {
         dispatch({ type: APP_DONE_LOADING })
         dispatch({ type: LOAD_SUCCESS })
 
         dispatch({
-          type: GAME_PLAYERS_UPDATED,
+          type: CLASSROOM_STUDENTS_UPDATED,
           payload: {
-            game,
-            players: result.body
+            classroom,
+            student: result.body
           }
         })
       })
@@ -65,17 +65,17 @@ export const fetchPlayers = (game) => {
   }
 }
 
-export const fetchOneGame = (gameId) => {
+export const fetchOneClassroom = (classroomId) => {
   return dispatch => {
     dispatch({ type: APP_LOADING })
 
-    api.get(`/games/${gameId}`)
+    api.get(`/classrooms/${classroomId}`)
       .then((result) => {
         dispatch({ type: APP_DONE_LOADING })
         dispatch({ type: LOAD_SUCCESS })
 
         dispatch({
-          type: FETCHED_ONE_GAME,
+          type: FETCHED_ONE_CLASSROOM,
           payload: result.body
         })
       })

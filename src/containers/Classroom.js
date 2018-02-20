@@ -47,13 +47,13 @@ class Classroom extends PureComponent {
 
 
 
-  componentWillReceiveProps(nextProps) {
-    const { classroom } = nextProps
-
-    // if (classroom && !classroom.students[0].name) {
-    //   this.props.fetchStudents(classroom)
-    // }
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   const { classroom } = nextProps
+  //
+  //    if (classroom && !classroom.students[0].name) {
+  //      this.props.fetchStudents(classroom)
+  //    }
+  // }
 
   // doTurnWithClassroomId = (weapon) => () => {
   //   return this.props.doTurn(weapon, this.props.classroom._id)

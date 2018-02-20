@@ -3,15 +3,21 @@ import React, { PureComponent } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import fetchClassrooms from '../actions/classrooms/fetch'
+import createClassroom from '../actions/classrooms/create'
 import { connect as subscribeToWebsocket } from '../actions/websocket'
-import CreateClassroomButton from '../components/classrooms/CreateClassroomButton'
-import Paper from 'material-ui/Paper'
-import Menu from 'material-ui/Menu'
-import MenuItem from 'material-ui/MenuItem'
+//import CreateClassroomButton from '../components/classrooms/CreateClassroomButton'
+//import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import {Card, CardTitle, CardText} from 'material-ui/Card';
+import TextField from 'material-ui/TextField';
+import DatePicker from 'material-ui/DatePicker';
+import RaisedButton from 'material-ui/RaisedButton';
+//import Paper from 'material-ui/Paper'
+//import Menu from 'material-ui/Menu'
+//import MenuItem from 'material-ui/MenuItem'
 //import WatchClassroomIcon from 'material-ui/svg-icons/image/remove-red-eye'
 //import JoinClassroomIcon from 'material-ui/svg-icons/social/person-add'
 
-import WaitingIcon from 'material-ui/svg-icons/image/timelapse'
+//import WaitingIcon from 'material-ui/svg-icons/image/timelapse'
 import './Lobby.css'
 
 class Lobby extends PureComponent {
@@ -36,6 +42,24 @@ class Lobby extends PureComponent {
   // isPlayable(classroom) {
   //   return this.isStudent(classroom) && classroom.students.length === 2
   // }
+  createClassroom (){
+
+    let batchNumber = this.refs.batchNumber.input.value
+    let startDate = this.refs.startDate.state.date
+    let endDate = this.refs.endDate.state.date
+
+    this.props.createClassroom({
+       batchNumber ,
+       startDate,
+       endDate
+    })
+  }
+  formatDate(date){
+
+    var newDate = new Date(date);
+
+    return new Intl.DateTimeFormat('en-GB').format(newDate)
+  }
 
   renderClassroom = (classroom, index) => {
     //let ActionIcon = this.isJoinable(classroom) ? JoinClassroomIcon : WatchClassroomIcon
@@ -48,11 +72,24 @@ class Lobby extends PureComponent {
     //   .join(' vs ')
 
     return (
-      <MenuItem
-        key={index}
-        onClick={this.goToClassroom(classroom._id)}
 
-        primaryText={ `${classroom.batchNumber} (${classroom.students.length})`} />
+
+
+        <Card className="classroom-card" key={index} onClick={this.goToClassroom(classroom._id)} >
+
+          <CardTitle title={ classroom.batchNumber } />
+          <CardText>
+            { `Number of students : ${classroom.students.length}`}
+            </CardText>
+            <CardText>
+            { `start date : ${this.formatDate(classroom.startDate)}` }
+            </CardText>
+            <CardText>
+            { `end date : ${this.formatDate(classroom.endDate)}` }
+            </CardText>
+
+        </Card>
+
     )
   }
 
@@ -60,19 +97,21 @@ class Lobby extends PureComponent {
     return (
 
       <div className="Lobby">
+      
+        <TextField  ref="batchNumber" hintText="Classroom Name" floatingLabelText="Classroom name"/>
+        <DatePicker ref="startDate" hintText="Start Date" floatingLabelText="Start Date"/>
+        <DatePicker ref="endDate" hintText="End Date" floatingLabelText="End Date"/>
 
+        <RaisedButton label="Create new Classroom" onClick={this.createClassroom.bind(this)}/>
         <h1>Classes : </h1>
-        <CreateClassroomButton />
-        <Paper className="paper">
-          <Menu>
-            {this.props.classrooms.map(this.renderClassroom)}
-          </Menu>
-        </Paper>
-      </div>
+        <div className="classes-container">
+          {this.props.classrooms.map(this.renderClassroom)}
+          </div>
+        </div>
     )
   }
 }
 
 const mapStateToProps = ({ classrooms, currentUser }) => ({ classrooms, currentUser })
 
-export default connect(mapStateToProps, { fetchClassrooms, subscribeToWebsocket, push })(Lobby)
+export default connect(mapStateToProps, { fetchClassrooms, subscribeToWebsocket, createClassroom,push })(Lobby)

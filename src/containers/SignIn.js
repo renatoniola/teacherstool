@@ -59,7 +59,7 @@ export class SignIn extends PureComponent {
         <RaisedButton
           style={ buttonStyle }
           onClick={ this.submitForm.bind(this) }
-          label="Sign in"ocker
+          label="Sign in"
           primary={true} />
       </Paper>
     )

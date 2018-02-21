@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { fetchOneClassroom } from '../actions/classrooms/fetch'
 import  createStudent  from '../actions/students/create'
+import  deleteStudent  from '../actions/students/delete'
 //import doTurn from '../actions/classrooms/doTurn'
 import { connect as subscribeToWebsocket } from '../actions/websocket'
 //import JoinClassroomDialog from '../components/classrooms/JoinClassroomDialog'
@@ -74,6 +75,7 @@ class Classroom extends PureComponent {
       evaluations : []
     },this.props.classroom._id)
   }
+
   calculateStudentsSRates(students){
     let ratesArray = [0,0,0]
 
@@ -101,18 +103,22 @@ class Classroom extends PureComponent {
 
     if (!classroom) return null
 
+    let deleteStudent = (studentId) => {
+       this.props.deleteStudent(classroom._id,studentId)
+    }
     // const title = classroom.students.map(p => (p.name || null))
     //   .filter(n => !!n)
     //   .join(' vs ')
 
     const students = classroom.students.map( (student,index) => {
+      console.log(student)
       let colorCode=''
       //console.log(student.evaluations[student.evaluations.length-1].colorCode)
       if(student.evaluations.length > 0) {
           colorCode = student.evaluations[student.evaluations.length-1].colorCode
-          return <StudentCard key={index} className="student-card" name={student.name} photo={student.photo} lastColorCode={ colorCode }/>
+          return <StudentCard key={index} studentId={student._id} className="student-card" name={student.name} photo={student.photo} lastColorCode={ colorCode } deleteStudent={deleteStudent}/>
       }
-         return <StudentCard key={index} className="student-card" name={student.name} photo={student.photo} />
+         return <StudentCard key={index} studentId={student._id} className="student-card" name={student.name} photo={student.photo} deleteStudent={deleteStudent} />
     })
     const studentsRates = this.calculateStudentsSRates(classroom.students);
 
@@ -158,6 +164,7 @@ export default connect(mapStateToProps, {
   subscribeToWebsocket,
   fetchOneClassroom,
   createStudent,
+  deleteStudent
   //fetchStudents,
   //doTurn
 })(Classroom)

@@ -97,10 +97,10 @@ class Lobby extends PureComponent {
     return (
 
       <div className="Lobby">
-      
-        <TextField  ref="batchNumber" hintText="Classroom Name" floatingLabelText="Classroom name"/>
-        <DatePicker ref="startDate" hintText="Start Date" floatingLabelText="Start Date"/>
-        <DatePicker ref="endDate" hintText="End Date" floatingLabelText="End Date"/>
+
+        <TextField  id="batch-number" ref="batchNumber" hintText="Classroom Name" floatingLabelText="Classroom name"/>
+        <DatePicker id="start-date" ref="startDate" hintText="Start Date" floatingLabelText="Start Date"/>
+        <DatePicker id="end-date" ref="endDate" hintText="End Date" floatingLabelText="End Date"/>
 
         <RaisedButton label="Create new Classroom" onClick={this.createClassroom.bind(this)}/>
         <h1>Classes : </h1>

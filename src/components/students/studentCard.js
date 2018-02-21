@@ -8,7 +8,7 @@ import './student-card.css'
 class StudentCard extends PureComponent {
   static propTypes = {
     photo: PropTypes.string.isRequired,
-    lastColorCode: PropTypes.string.isRequired,
+    lastColorCode: PropTypes.string,
     name: PropTypes.string.isRequired,
   }
   render() {

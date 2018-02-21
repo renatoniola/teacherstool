@@ -2,11 +2,15 @@ import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { fetchOneClassroom } from '../actions/classrooms/fetch'
+import  createStudent  from '../actions/students/create'
 //import doTurn from '../actions/classrooms/doTurn'
 import { connect as subscribeToWebsocket } from '../actions/websocket'
 //import JoinClassroomDialog from '../components/classrooms/JoinClassroomDialog'
 //import TurnButton from '../components/classrooms/TurnButton'
 import StudentCard from '../components/students/studentCard'
+import TextField from 'material-ui/TextField';
+
+import RaisedButton from 'material-ui/RaisedButton';
 //import FlatButton from 'material-ui/FlatButton';
 import ColorBar from '../components/colorBar/ColorBar'
 import './classroom.css'
@@ -58,21 +62,37 @@ class Classroom extends PureComponent {
   // doTurnWithClassroomId = (weapon) => () => {
   //   return this.props.doTurn(weapon, this.props.classroom._id)
   // }
+
+  createNewStudent(){
+    let name = this.refs.name.input.value
+    let photo = this.refs.photo.input.value
+
+
+    this.props.createStudent({
+      name,
+      photo,
+      evaluations : []
+    },this.props.classroom._id)
+  }
   calculateStudentsSRates(students){
     let ratesArray = [0,0,0]
 
     for(let i=0;i < students.length ; i++){
-      let lastColorCode = students[i].evaluations[students[i].evaluations.length-1].colorCode
 
-       if( lastColorCode === 'green'){
-          ratesArray[0]++;
-       }
-       if( lastColorCode === 'yellow'){
-          ratesArray[1]++;
-       }
-       if( lastColorCode === 'red'){
-          ratesArray[2]++;
-       }
+      if( students[i].evaluations.length > 0){
+        let lastColorCode = students[i].evaluations[students[i].evaluations.length-1].colorCode
+
+         if( lastColorCode === 'green'){
+            ratesArray[0]++;
+         }
+         if( lastColorCode === 'yellow'){
+            ratesArray[1]++;
+         }
+         if( lastColorCode === 'red'){
+            ratesArray[2]++;
+         }
+     }
+
     }
     return ratesArray
   }
@@ -86,8 +106,13 @@ class Classroom extends PureComponent {
     //   .join(' vs ')
 
     const students = classroom.students.map( (student,index) => {
-      console.log(student.evaluations[student.evaluations.length-1].colorCode)
-      return <StudentCard key={index} className="student-card" name={student.name} photo={student.photo} lastColorCode={ student.evaluations[student.evaluations.length-1].colorCode}/>
+      let colorCode=''
+      //console.log(student.evaluations[student.evaluations.length-1].colorCode)
+      if(student.evaluations.length > 0) {
+          colorCode = student.evaluations[student.evaluations.length-1].colorCode
+          return <StudentCard key={index} className="student-card" name={student.name} photo={student.photo} lastColorCode={ colorCode }/>
+      }
+         return <StudentCard key={index} className="student-card" name={student.name} photo={student.photo} />
     })
     const studentsRates = this.calculateStudentsSRates(classroom.students);
 
@@ -97,6 +122,15 @@ class Classroom extends PureComponent {
       <div className="classroom">
         <h1>Students in class : { classroom.batchNumber }</h1>
         <ColorBar colorArray={studentsRates} />
+
+
+        <TextField  ref="name" hintText="Student name" floatingLabelText="Student name"/><br/>
+        <TextField  ref="photo" hintText="Photo url" floatingLabelText="photo url"/><br/>
+
+
+        <RaisedButton label="Save Student" onClick={this.createNewStudent.bind(this)}/><br/>
+
+
         {/*<p>{title}</p> */}
         <div className="students-container">{ students }</div>
 
@@ -123,6 +157,7 @@ const mapStateToProps = ({ currentUser, classrooms }, { match }) => {
 export default connect(mapStateToProps, {
   subscribeToWebsocket,
   fetchOneClassroom,
+  createStudent,
   //fetchStudents,
   //doTurn
 })(Classroom)

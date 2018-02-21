@@ -1,0 +1,19 @@
+.bar-container{
+   display : flex;
+   width : 80%;
+   border-radius: 6px;
+   margin: 0 auto;
+   margin-bottom: 20px;
+}
+.colorbar{
+   height : 14px;
+}
+.green-bar{
+  background-color: #1fb118;
+}
+.yellow-bar{
+  background-color: #ffc821;
+}
+.red-bar{
+  background-color: #d5362f;
+}

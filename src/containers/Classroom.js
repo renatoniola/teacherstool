@@ -8,7 +8,7 @@ import { connect as subscribeToWebsocket } from '../actions/websocket'
 //import TurnButton from '../components/classrooms/TurnButton'
 import StudentCard from '../components/students/studentCard'
 //import FlatButton from 'material-ui/FlatButton';
-
+import ColorBar from '../components/colorBar/ColorBar'
 import './classroom.css'
 
 const studentShape = PropTypes.shape({
@@ -89,16 +89,14 @@ class Classroom extends PureComponent {
       console.log(student.evaluations[student.evaluations.length-1].colorCode)
       return <StudentCard key={index} className="student-card" name={student.name} photo={student.photo} lastColorCode={ student.evaluations[student.evaluations.length-1].colorCode}/>
     })
-    const studentsRates = this.calculateStudentsSRates(classroom.students)
+    const studentsRates = this.calculateStudentsSRates(classroom.students);
 
-    const rates = studentsRates.map( (item) => {
-      return <div>{ item }</div>
-    })
+
 
     return (
       <div className="classroom">
         <h1>Students in class : { classroom.batchNumber }</h1>
-        { rates  }
+        <ColorBar colorArray={studentsRates} />
         {/*<p>{title}</p> */}
         <div className="students-container">{ students }</div>
 

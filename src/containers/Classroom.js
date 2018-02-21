@@ -58,7 +58,24 @@ class Classroom extends PureComponent {
   // doTurnWithClassroomId = (weapon) => () => {
   //   return this.props.doTurn(weapon, this.props.classroom._id)
   // }
+  calculateStudentsSRates(students){
+    let ratesArray = [0,0,0]
 
+    for(let i=0;i < students.length ; i++){
+      let lastColorCode = students[i].evaluations[students[i].evaluations.length-1].colorCode
+
+       if( lastColorCode === 'green'){
+          ratesArray[0]++;
+       }
+       if( lastColorCode === 'yellow'){
+          ratesArray[1]++;
+       }
+       if( lastColorCode === 'red'){
+          ratesArray[2]++;
+       }
+    }
+    return ratesArray
+  }
   render() {
     const { classroom } = this.props
 
@@ -69,11 +86,19 @@ class Classroom extends PureComponent {
     //   .join(' vs ')
 
     const students = classroom.students.map( (student,index) => {
+      console.log(student.evaluations[student.evaluations.length-1].colorCode)
       return <StudentCard key={index} className="student-card" name={student.name} photo={student.photo} lastColorCode={ student.evaluations[student.evaluations.length-1].colorCode}/>
     })
+    const studentsRates = this.calculateStudentsSRates(classroom.students)
+
+    const rates = studentsRates.map( (item) => {
+      return <div>{ item }</div>
+    })
+
     return (
       <div className="classroom">
         <h1>Students in class : { classroom.batchNumber }</h1>
+        { rates  }
         {/*<p>{title}</p> */}
         <div className="students-container">{ students }</div>
 
@@ -86,6 +111,9 @@ class Classroom extends PureComponent {
 
 const mapStateToProps = ({ currentUser, classrooms }, { match }) => {
   const classroom = classrooms.filter((g) => (g._id === match.params.classroomId))[0]
+  // green , yellow , red
+
+
 //  const currentStudent = classroom && classroom.students.filter((p) => (p.userId === currentUser._id))[0]
   return {
 

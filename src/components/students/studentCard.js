@@ -39,8 +39,8 @@ class StudentCard extends PureComponent {
 
         <CardActions>
 
-          <IconButton iconStyle={{fill: '#f96e64',width:32,height:32}} onClick={this.deleteStudent.bind(this)}><DeleteIcon /></IconButton>
-          <IconButton iconStyle={{fill: '#f5c531',width:32,height:32}} onClick={this.props.evalStudent.bind(this,this.props.studentId)}><AssignmentIcon /></IconButton>
+          <IconButton tooltip='delete student' iconStyle={{fill: '#f96e64',width:32,height:32}} onClick={this.deleteStudent.bind(this)}><DeleteIcon /></IconButton>
+          <IconButton tooltip='see evalutions' iconStyle={{fill: '#f5c531',width:32,height:32}} onClick={this.props.evalStudent.bind(this,this.props.studentId)}><AssignmentIcon /></IconButton>
         </CardActions>
       </Card>
     )

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { fetchOneClassroom } from '../actions/classrooms/fetch'
 import  createStudent  from '../actions/students/create'
+import  createEvaluation  from '../actions/students/newEvaluation'
 import  deleteStudent  from '../actions/students/delete'
 //import doTurn from '../actions/classrooms/doTurn'
 import { connect as subscribeToWebsocket } from '../actions/websocket'
@@ -10,14 +11,21 @@ import { connect as subscribeToWebsocket } from '../actions/websocket'
 //import TurnButton from '../components/classrooms/TurnButton'
 import StudentCard from '../components/students/studentCard'
 import ColorLabel from '../components/colorlabel/ColorLabel'
+import { RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
+import CircleIcon from 'material-ui/svg-icons/av/fiber-manual-record'
+import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle'
 import TextField from 'material-ui/TextField';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
+import DatePicker from 'material-ui/DatePicker';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 //import FlatButton from 'material-ui/FlatButton';
 import ColorBar from '../components/colorBar/ColorBar'
 import './classroom.css'
+
+
+
 
 const studentShape = PropTypes.shape({
   name: PropTypes.string
@@ -45,7 +53,11 @@ class Classroom extends PureComponent {
   }
   state = {
     open: false,
-    studentEvaluations : []
+    studentEvaluations : [],
+    remarkError : '',
+    colorCodeError : '',
+    emptyDayError : '',
+    filterValue : 'all'
 
   };
   componentWillMount() {
@@ -109,9 +121,12 @@ class Classroom extends PureComponent {
     this.setState({open: true});
 
     const student = this.props.classroom.students.filter((s) => (s._id === studentId))[0]
+
     this.setState({
       studentName : student.name,
-      studentEvaluations : student.evaluations
+      studentEvaluations : student.evaluations,
+      studentPhoto : student.photo,
+      studentId : studentId
 
     })
 
@@ -119,14 +134,64 @@ class Classroom extends PureComponent {
   };
 
   handleClose = () => {
-    this.setState({open: false});
+    this.setState({open: false , colorCodeError : '', remarkError : ''});
   };
-  saveStudent = () => {
-    this.handleClose()
-  }
 
+  saveStudent = () => {
+
+    const remark = this.refs.remark.getValue()
+    const day = this.refs.evalDate.refs.input.props.value
+    const colorCode = this.refs.evaluation.state.selected
+
+    if( colorCode === '' ){
+      console.log(colorCode)
+
+       this.setState({
+          colorCodeError : 'color label is mandatory'
+       })
+
+    }else{
+           if ( day === ''){
+            this.setState({
+
+              emptyDayError : 'date for evaluation is mandatory',
+              colorCodeError :''
+            })
+          }else{
+            this.setState({
+
+              emptyDayError : ''
+
+            })
+            if ( (colorCode === 'red' || colorCode === 'yellow')  && remark === ''){
+              this.setState({
+                 remarkError : 'Remark is mandatory if label is red or yellow'
+              })
+            }else{
+
+            let newEvaluation = {
+               colorCode ,
+               remark ,
+               day
+            }
+
+             this.props.createEvaluation(this.props.classroom._id,this.state.studentId,newEvaluation)
+             this.handleClose()
+
+          }
+
+        }
+      }
+}
   saveStudentAndNext = () => {
+
     this.saveStudent()
+
+  }
+  filterChange(e){
+    this.setState({
+      filterValue : e.target.value
+    })
   }
   render() {
     const { classroom } = this.props
@@ -156,6 +221,7 @@ class Classroom extends PureComponent {
     const studentEvaluations = this.state.studentEvaluations.map( (item, index ) => {
        return <ColorLabel label={ item.colorCode } day={item.day} key={index}></ColorLabel>
     })
+
     let deleteStudent = (studentId) => {
        this.props.deleteStudent(classroom._id,studentId)
     }
@@ -172,6 +238,7 @@ class Classroom extends PureComponent {
           colorCode = student.evaluations[student.evaluations.length-1].colorCode
           day = student.evaluations[student.evaluations.length-1].day
 
+          if( this.state.filterValue === 'all' || this.state.filterValue === colorCode )
           return <StudentCard
                   key={index}
                   studentId={student._id}
@@ -182,7 +249,8 @@ class Classroom extends PureComponent {
                   lastDay = {day}
                   deleteStudent={deleteStudent}
                   evalStudent={this.handleOpen}/>
-      }
+         }
+         if( this.state.filterValue === 'all' ){
          return <StudentCard
                  key={index}
                  studentId={student._id}
@@ -192,6 +260,7 @@ class Classroom extends PureComponent {
 
                  deleteStudent={deleteStudent}
                  evalStudent={this.handleOpen}/>
+               }
     })
 
     const studentsRates = this.calculateStudentsSRates(classroom.students);
@@ -211,17 +280,59 @@ class Classroom extends PureComponent {
               autoScrollBodyContent={true}
             >
 
-            { studentEvaluations }
+            <div id="container" className="flexChild columnParent">
 
-            <TextField
-              hintText="Leave a remark"
+               <div id="columnChild18109" className="flexChild rowParent selected">
+                   <div id="rowChild26638" className="flexChild"><img src={this.state.studentPhoto} /></div>
 
-              floatingLabelText="Remark"
-              multiLine={true}
-              rows={8}
-            />
+                   <div id="rowChild46232" className="flexChild">{ studentEvaluations }
+                   <DatePicker  errorText={this.state.emptyDayError} ref="evalDate" hintText="Evaluatiion Date" floatingLabelText="Evaluation Date"/>
+                   </div>
+               </div>
 
-        </Dialog>
+               <div id="columnChild77698" className="flexChild rowParent">
+                 <div id="rowChild67036" className="flexChild">
+                 <RadioButtonGroup  ref="evaluation" name="evaluation" >
+
+                     <RadioButton
+                       value="green"
+
+                       checkedIcon={<CheckCircleIcon style={{fill: 'green'}} />}
+                       uncheckedIcon={<CircleIcon style={{fill: 'green'}} />}
+
+                     />
+                     <RadioButton
+                       value="yellow"
+
+                       checkedIcon={<CheckCircleIcon style={{fill: '#f5c531'}} />}
+                       uncheckedIcon={<CircleIcon style={{fill: '#f5c531'}} />}
+
+                     />
+                     <RadioButton
+                       value="red"
+
+                       checkedIcon={<CheckCircleIcon style={{fill: 'red'}} />}
+                       uncheckedIcon={<CircleIcon style={{fill: 'red'}} />}
+
+                     />
+                   </RadioButtonGroup>
+                   <span className="error">{this.state.colorCodeError}</span>
+                 </div>
+
+                 <div id="rowChild94145" className="flexChild">
+                 <TextField ref="remark"
+                   hintText="Leave a remark"
+
+                   floatingLabelText="Remark"
+                   multiLine={true}
+                   errorText={this.state.remarkError}
+                   rows={8}
+                 />
+                 </div>
+             </div>
+             </div>
+
+       </Dialog>
 
         <h1>Students in class : { classroom.batchNumber }</h1>
         <ColorBar colorArray={studentsRates} />
@@ -234,7 +345,39 @@ class Classroom extends PureComponent {
         <RaisedButton label="Create Student" onClick={this.createNewStudent.bind(this)}/><br/>
 
 
-        {/*<p>{title}</p> */}
+        <RadioButtonGroup onChange={this.filterChange.bind(this)} defaultSelected="all" className="filter-color" ref="filterColor" name="filterColor" >
+
+            <RadioButton className="radio"
+              value="all"
+              label="show all"
+
+              checkedIcon={<CheckCircleIcon style={{fill: 'grey'}} />}
+              uncheckedIcon={<CircleIcon style={{fill: 'grey'}} />}
+
+            />
+            <RadioButton className="radio"
+              value="green"
+              label="show greens"
+              checkedIcon={<CheckCircleIcon style={{fill: 'green'}} />}
+              uncheckedIcon={<CircleIcon style={{fill: 'green'}} />}
+
+            />
+            <RadioButton className="radio"
+              value="yellow"
+              label="show yellows"
+              checkedIcon={<CheckCircleIcon style={{fill: '#f5c531'}} />}
+              uncheckedIcon={<CircleIcon style={{fill: '#f5c531'}} />}
+
+
+            />
+            <RadioButton className="radio"
+              value="red"
+              label="show reds"
+              checkedIcon={<CheckCircleIcon style={{fill: 'red'}} />}
+              uncheckedIcon={<CircleIcon style={{fill: 'red'}} />}
+
+            />
+          </RadioButtonGroup>
         <div className="students-container">{ students }</div>
 
 
@@ -261,7 +404,8 @@ export default connect(mapStateToProps, {
   subscribeToWebsocket,
   fetchOneClassroom,
   createStudent,
-  deleteStudent
+  deleteStudent,
+  createEvaluation
   //fetchStudents,
   //doTurn
 })(Classroom)

@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
-
+import AssignmentIcon from 'material-ui/svg-icons/action/assignment'
+import ColorLabel from '../colorlabel/ColorLabel'
 import FlatButton from 'material-ui/FlatButton';
 import './student-card.css'
 
@@ -15,6 +16,7 @@ class StudentCard extends PureComponent {
     photo: PropTypes.string.isRequired,
     lastColorCode: PropTypes.string,
     name: PropTypes.string.isRequired,
+    evalStudent : PropTypes.func.isRequired
   }
 
   deleteStudent(){
@@ -32,12 +34,13 @@ class StudentCard extends PureComponent {
           <img src={ this.props.photo } />
         </CardMedia>
         <CardText>
-          { this.props.lastColorCode }
+          { this.props.lastColorCode ? <ColorLabel label={ this.props.lastColorCode }></ColorLabel> : '' }
         </CardText>
 
         <CardActions>
 
-          <IconButton onClick={this.deleteStudent.bind(this)}><DeleteIcon /></IconButton>
+          <IconButton iconStyle={{fill: '#f96e64',width:32,height:32}} onClick={this.deleteStudent.bind(this)}><DeleteIcon /></IconButton>
+          <IconButton iconStyle={{fill: '#f5c531',width:32,height:32}} onClick={this.props.evalStudent.bind(this,this.props.studentId)}><AssignmentIcon /></IconButton>
         </CardActions>
       </Card>
     )

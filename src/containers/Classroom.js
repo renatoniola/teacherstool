@@ -9,8 +9,11 @@ import { connect as subscribeToWebsocket } from '../actions/websocket'
 //import JoinClassroomDialog from '../components/classrooms/JoinClassroomDialog'
 //import TurnButton from '../components/classrooms/TurnButton'
 import StudentCard from '../components/students/studentCard'
+import ColorLabel from '../components/colorlabel/ColorLabel'
 import TextField from 'material-ui/TextField';
-
+import FlatButton from 'material-ui/FlatButton';
+import Dialog from 'material-ui/Dialog';
+import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 //import FlatButton from 'material-ui/FlatButton';
 import ColorBar from '../components/colorBar/ColorBar'
@@ -40,7 +43,11 @@ class Classroom extends PureComponent {
     })
 
   }
+  state = {
+    open: false,
+    studentEvaluations : []
 
+  };
   componentWillMount() {
 
     const { classroom, fetchOneClassroom, subscribeToWebsocket } = this.props
@@ -98,11 +105,57 @@ class Classroom extends PureComponent {
     }
     return ratesArray
   }
+  handleOpen = (studentId) => {
+    this.setState({open: true});
+
+    const student = this.props.classroom.students.filter((s) => (s._id === studentId))[0]
+    this.setState({
+      studentName : student.name,
+      studentEvaluations : student.evaluations
+
+    })
+
+
+  };
+
+  handleClose = () => {
+    this.setState({open: false});
+  };
+  saveStudent = () => {
+    this.handleClose()
+  }
+
+  saveStudentAndNext = () => {
+    this.saveStudent()
+  }
   render() {
     const { classroom } = this.props
 
     if (!classroom) return null
 
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onClick={this.handleClose}
+      />,
+      <FlatButton
+        label="Save"
+        primary={true}
+        keyboardFocused={true}
+        onClick={this.saveStudent}
+      />,
+      <FlatButton
+        label="Save and next"
+        primary={true}
+        keyboardFocused={true}
+        onClick={this.saveStudentAndNext}
+      />,
+    ];
+
+    const studentEvaluations = this.state.studentEvaluations.map( (item, index ) => {
+       return <ColorLabel label={ item.colorCode } key={index}></ColorLabel>
+    })
     let deleteStudent = (studentId) => {
        this.props.deleteStudent(classroom._id,studentId)
     }
@@ -116,16 +169,55 @@ class Classroom extends PureComponent {
       //console.log(student.evaluations[student.evaluations.length-1].colorCode)
       if(student.evaluations.length > 0) {
           colorCode = student.evaluations[student.evaluations.length-1].colorCode
-          return <StudentCard key={index} studentId={student._id} className="student-card" name={student.name} photo={student.photo} lastColorCode={ colorCode } deleteStudent={deleteStudent}/>
+          return <StudentCard
+                  key={index}
+                  studentId={student._id}
+                  className="student-card"
+                  name={student.name}
+                  photo={student.photo}
+                  lastColorCode={ colorCode }
+                  deleteStudent={deleteStudent}
+                  evalStudent={this.handleOpen}/>
       }
-         return <StudentCard key={index} studentId={student._id} className="student-card" name={student.name} photo={student.photo} deleteStudent={deleteStudent} />
+         return <StudentCard
+                 key={index}
+                 studentId={student._id}
+                 className="student-card"
+                 name={student.name}
+                 photo={student.photo}
+                 deleteStudent={deleteStudent}
+                 evalStudent={this.handleOpen}/>
     })
+
     const studentsRates = this.calculateStudentsSRates(classroom.students);
+
 
 
 
     return (
       <div className="classroom">
+
+          <Dialog
+              title={this.state.studentName}
+              actions={actions}
+              modal={true}
+              open={this.state.open}
+              onRequestClose={this.handleClose}
+              autoScrollBodyContent={true}
+            >
+
+            { studentEvaluations }
+
+            <TextField
+              hintText="Leave a remark"
+
+              floatingLabelText="Remark"
+              multiLine={true}
+              rows={8}
+            />
+
+        </Dialog>
+
         <h1>Students in class : { classroom.batchNumber }</h1>
         <ColorBar colorArray={studentsRates} />
 
@@ -134,7 +226,7 @@ class Classroom extends PureComponent {
         <TextField  ref="photo" hintText="Photo url" floatingLabelText="photo url"/><br/>
 
 
-        <RaisedButton label="Save Student" onClick={this.createNewStudent.bind(this)}/><br/>
+        <RaisedButton label="Create Student" onClick={this.createNewStudent.bind(this)}/><br/>
 
 
         {/*<p>{title}</p> */}

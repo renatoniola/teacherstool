@@ -6,3 +6,6 @@
   display : flex;
   flex-wrap:wrap;
 }
+.students-container IconButton{
+  color : red;
+}

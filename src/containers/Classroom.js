@@ -154,7 +154,7 @@ class Classroom extends PureComponent {
     ];
 
     const studentEvaluations = this.state.studentEvaluations.map( (item, index ) => {
-       return <ColorLabel label={ item.colorCode } key={index}></ColorLabel>
+       return <ColorLabel label={ item.colorCode } day={item.day} key={index}></ColorLabel>
     })
     let deleteStudent = (studentId) => {
        this.props.deleteStudent(classroom._id,studentId)
@@ -166,9 +166,12 @@ class Classroom extends PureComponent {
     const students = classroom.students.map( (student,index) => {
       console.log(student)
       let colorCode=''
+      let day = ''
       //console.log(student.evaluations[student.evaluations.length-1].colorCode)
       if(student.evaluations.length > 0) {
           colorCode = student.evaluations[student.evaluations.length-1].colorCode
+          day = student.evaluations[student.evaluations.length-1].day
+
           return <StudentCard
                   key={index}
                   studentId={student._id}
@@ -176,6 +179,7 @@ class Classroom extends PureComponent {
                   name={student.name}
                   photo={student.photo}
                   lastColorCode={ colorCode }
+                  lastDay = {day}
                   deleteStudent={deleteStudent}
                   evalStudent={this.handleOpen}/>
       }
@@ -185,6 +189,7 @@ class Classroom extends PureComponent {
                  className="student-card"
                  name={student.name}
                  photo={student.photo}
+
                  deleteStudent={deleteStudent}
                  evalStudent={this.handleOpen}/>
     })

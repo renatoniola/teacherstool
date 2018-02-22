@@ -2,17 +2,17 @@
   width : 20px;
   height : 20px;
   border-radius: 10px;
-  
+
 }
 .green{
-  background-color: green;
+  fill: green;
 
 }
 .yellow{
-  background-color: yellow;
+  fill: yellow;
 
 }
 .red{
-  background-color: red;
+  fill: red;
 
 }

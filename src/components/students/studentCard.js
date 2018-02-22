@@ -34,7 +34,7 @@ class StudentCard extends PureComponent {
           <img src={ this.props.photo } />
         </CardMedia>
         <CardText>
-          { this.props.lastColorCode ? <ColorLabel label={ this.props.lastColorCode }></ColorLabel> : '' }
+          { this.props.lastColorCode ? <ColorLabel label={ this.props.lastColorCode } day={this.props.lastDay}></ColorLabel> : '' }
         </CardText>
 
         <CardActions>

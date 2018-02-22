@@ -1,5 +1,9 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+//import Tooltip from 'material-ui/Tooltip';
+import IconButton from 'material-ui/IconButton'
+import CircleIcon from 'material-ui/svg-icons/av/fiber-manual-record'
+import { formatDate } from '../../utils/UtilsLib'
 
 import './color-label.css'
 
@@ -11,28 +15,35 @@ class ColorLabel extends PureComponent {
 
   render() {
 
-    const { label } = this.props
+    const { label ,day } = this.props
+    //const { formatDate } = UtilsLib
 
-    let labelStyle = ''
+    let color = ''
 
     switch(label.toLowerCase()) {
         case 'green':
-            labelStyle = 'label green'
+            color = 'green'
             break;
         case 'yellow':
-            labelStyle = 'label yellow'
+            color = 'yellow'
             break;
         case 'red':
-            labelStyle = 'label red'
+            color = 'red'
             break;
         default:
-            labelStyle = ''
+            color = ''
     }
 
     return (
-      <div>
-        <div className={labelStyle}></div>
-      </div>
+
+
+
+        <IconButton iconStyle={{fill: color,width:32,height:32}}
+            tooltip={formatDate(day)}
+            tooltipPosition="bottom-center">
+            <CircleIcon  />
+        </IconButton>
+
     )
   }
 

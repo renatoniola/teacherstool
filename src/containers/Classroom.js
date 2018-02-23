@@ -193,6 +193,26 @@ class Classroom extends PureComponent {
       filterValue : e.target.value
     })
   }
+  randomStudent(){
+
+    let studentsFilterd = this.props.classroom.students.filter(student => student.evaluations.length > 0);
+
+    let reds = studentsFilterd.filter(student => student.evaluations[student.evaluations.length-1].colorCode === 'red');
+    let yellows = studentsFilterd.filter(student => student.evaluations[student.evaluations.length-1].colorCode === 'yellow');
+    let greens = studentsFilterd.filter(student => student.evaluations[student.evaluations.length-1].colorCode === 'green');
+
+    console.log(reds,yellows,greens)
+
+    let randomNumber = (Math.floor(Math.random() * 100) + 1)
+
+    if( randomNumber > 0 && randomNumber <= 49){
+       console.log(reds[Math.floor(Math.random() * reds.length-1) + 1], 'reds')
+    }else if ( randomNumber > 49 && randomNumber <= 67){
+       console.log(randomNumber , 'greens')
+    }else{
+       console.log(randomNumber , 'yellow')
+    }
+  }
   render() {
     const { classroom } = this.props
 
@@ -270,7 +290,7 @@ class Classroom extends PureComponent {
 
     return (
       <div className="classroom">
-
+         <RaisedButton label="Ask a Question" onClick={this.randomStudent.bind(this)}/><br/>
           <Dialog
               title={this.state.studentName}
               actions={actions}
@@ -343,6 +363,7 @@ class Classroom extends PureComponent {
 
 
         <RaisedButton label="Create Student" onClick={this.createNewStudent.bind(this)}/><br/>
+
 
 
         <RadioButtonGroup onChange={this.filterChange.bind(this)} defaultSelected="all" className="filter-color" ref="filterColor" name="filterColor" >

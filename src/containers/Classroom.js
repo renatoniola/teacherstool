@@ -5,12 +5,12 @@ import { fetchOneClassroom } from '../actions/classrooms/fetch'
 import  createStudent  from '../actions/students/create'
 import  createEvaluation  from '../actions/students/newEvaluation'
 import  deleteStudent  from '../actions/students/delete'
-//import doTurn from '../actions/classrooms/doTurn'
+
 import { connect as subscribeToWebsocket } from '../actions/websocket'
-//import JoinClassroomDialog from '../components/classrooms/JoinClassroomDialog'
-//import TurnButton from '../components/classrooms/TurnButton'
+
 import StudentCard from '../components/students/studentCard'
 import ColorLabel from '../components/colorlabel/ColorLabel'
+import RandomStudent from '../components/randomstudent/RandomStudent'
 import { RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
 import CircleIcon from 'material-ui/svg-icons/av/fiber-manual-record'
 import CheckCircleIcon from 'material-ui/svg-icons/action/check-circle'
@@ -20,7 +20,7 @@ import Dialog from 'material-ui/Dialog';
 import DatePicker from 'material-ui/DatePicker';
 import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
-//import FlatButton from 'material-ui/FlatButton';
+
 import ColorBar from '../components/colorBar/ColorBar'
 import './classroom.css'
 
@@ -68,20 +68,6 @@ class Classroom extends PureComponent {
     if (!classroom) { fetchOneClassroom(classroomId) }
     subscribeToWebsocket()
   }
-
-
-
-  // componentWillReceiveProps(nextProps) {
-  //   const { classroom } = nextProps
-  //
-  //    if (classroom && !classroom.students[0].name) {
-  //      this.props.fetchStudents(classroom)
-  //    }
-  // }
-
-  // doTurnWithClassroomId = (weapon) => () => {
-  //   return this.props.doTurn(weapon, this.props.classroom._id)
-  // }
 
   createNewStudent(){
     let name = this.refs.name.input.value
@@ -193,26 +179,7 @@ class Classroom extends PureComponent {
       filterValue : e.target.value
     })
   }
-  randomStudent(){
 
-    let studentsFilterd = this.props.classroom.students.filter(student => student.evaluations.length > 0);
-
-    let reds = studentsFilterd.filter(student => student.evaluations[student.evaluations.length-1].colorCode === 'red');
-    let yellows = studentsFilterd.filter(student => student.evaluations[student.evaluations.length-1].colorCode === 'yellow');
-    let greens = studentsFilterd.filter(student => student.evaluations[student.evaluations.length-1].colorCode === 'green');
-
-    console.log(reds,yellows,greens)
-
-    let randomNumber = (Math.floor(Math.random() * 100) + 1)
-
-    if( randomNumber > 0 && randomNumber <= 49){
-       console.log(reds[Math.floor(Math.random() * reds.length-1) + 1], 'reds')
-    }else if ( randomNumber > 49 && randomNumber <= 67){
-       console.log(randomNumber , 'greens')
-    }else{
-       console.log(randomNumber , 'yellow')
-    }
-  }
   render() {
     const { classroom } = this.props
 
@@ -245,15 +212,12 @@ class Classroom extends PureComponent {
     let deleteStudent = (studentId) => {
        this.props.deleteStudent(classroom._id,studentId)
     }
-    // const title = classroom.students.map(p => (p.name || null))
-    //   .filter(n => !!n)
-    //   .join(' vs ')
 
     const students = classroom.students.map( (student,index) => {
       console.log(student)
       let colorCode=''
       let day = ''
-      //console.log(student.evaluations[student.evaluations.length-1].colorCode)
+
       if(student.evaluations.length > 0) {
           colorCode = student.evaluations[student.evaluations.length-1].colorCode
           day = student.evaluations[student.evaluations.length-1].day
@@ -290,7 +254,7 @@ class Classroom extends PureComponent {
 
     return (
       <div className="classroom">
-         <RaisedButton label="Ask a Question" onClick={this.randomStudent.bind(this)}/><br/>
+          <RandomStudent classroom={ this.props.classroom}/>
           <Dialog
               title={this.state.studentName}
               actions={actions}
@@ -410,10 +374,7 @@ class Classroom extends PureComponent {
 
 const mapStateToProps = ({ currentUser, classrooms }, { match }) => {
   const classroom = classrooms.filter((g) => (g._id === match.params.classroomId))[0]
-  // green , yellow , red
 
-
-//  const currentStudent = classroom && classroom.students.filter((p) => (p.userId === currentUser._id))[0]
   return {
 
     classroom
@@ -427,6 +388,4 @@ export default connect(mapStateToProps, {
   createStudent,
   deleteStudent,
   createEvaluation
-  //fetchStudents,
-  //doTurn
 })(Classroom)
